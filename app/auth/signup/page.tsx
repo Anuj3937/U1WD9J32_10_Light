@@ -1,33 +1,59 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useAuthStore } from "@/lib/auth";
 
 export default function Signup() {
-  const [error, setError] = useState("")
-  const router = useRouter()
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const register = useAuthStore((state) => state.register);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    // Here you would typically make an API call to register
-    router.push("/dashboard")
-  }
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const firstName = formData.get("firstName") as string;
+    const lastName = formData.get("lastName") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    try {
+      await register(firstName, lastName, email, password);
+      router.push("/dashboard");
+    } catch (err: any) {
+      setError(err.message || "Registration failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
-          <CardDescription>Join our community and start your mental wellness journey</CardDescription>
+          <CardTitle className="text-2xl font-bold">
+            Create an account
+          </CardTitle>
+          <CardDescription>
+            Join our community and start your mental wellness journey
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -54,8 +80,8 @@ export default function Signup() {
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-            <Button type="submit" className="w-full">
-              Create Account
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Creating Account..." : "Create Account"}
             </Button>
           </form>
         </CardContent>
@@ -69,6 +95,5 @@ export default function Signup() {
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }
-

@@ -1,6 +1,9 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,11 +11,39 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { BarChart2, Video, Users, Film, MessageCircle, Target, Bell, Book } from "lucide-react"
-import { ThemeToggle } from "@/components/theme-toggle"
+} from "@/components/ui/dropdown-menu";
+import {
+  BarChart2,
+  Video,
+  Users,
+  Film,
+  MessageCircle,
+  Target,
+  Bell,
+  Book,
+} from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { useAuthStore } from "@/lib/auth";
 
 export function Nav() {
+  const router = useRouter();
+
+  // ✅ Use a stable function reference to prevent excessive re-renders
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore.getState().logout; // ✅ Access logout directly without causing state updates
+
+  const handleLogout = async () => {
+    await logout();
+    router.push("/auth/login"); // Redirect to login after logout
+  };
+
+  const getInitials = () => {
+    if (user?.firstName && user?.lastName) {
+      return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
+    }
+    return "US"; // Default initials if no user data
+  };
+
   return (
     <nav className="bg-background border-b sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -75,25 +106,33 @@ export function Nav() {
               <DropdownMenuTrigger>
                 <Avatar>
                   <AvatarImage src="/placeholder-user.jpg" />
-                  <AvatarFallback>US</AvatarFallback>
+                  <AvatarFallback>{getInitials()}</AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/profile">Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/settings">Settings</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link href="/goals">Goals & Achievements</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-red-600">Log out</DropdownMenuItem>
+                <DropdownMenuItem
+                  className="text-red-600"
+                  onClick={handleLogout}
+                >
+                  Log out
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
         </div>
       </div>
     </nav>
-  )
+  );
 }
-

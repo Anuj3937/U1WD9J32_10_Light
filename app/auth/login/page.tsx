@@ -1,31 +1,41 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { ChromeIcon as Google, Github } from "lucide-react"
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ChromeIcon as Google, Github } from "lucide-react";
+import { useAuthStore } from "@/lib/auth"; // Import Zustand auth store
 
 export default function Login() {
-  const [error, setError] = useState("")
-  const router = useRouter()
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const login = useAuthStore((state) => state.login); // Get login method from Zustand store
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
-    const email = formData.get("email")
-    const password = formData.get("password")
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
-    // Here you would typically make an API call to authenticate
-    console.log("Login attempt:", { email, password })
-    router.push("/dashboard")
-  }
+    try {
+      await login(email, password);
+      router.push("/dashboard"); // Redirect on successful login
+    } catch (err: any) {
+      setError(err.message || "Login failed. Please try again.");
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -51,7 +61,9 @@ export default function Login() {
                 <span className="w-full border-t" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                <span className="bg-background px-2 text-muted-foreground">
+                  Or continue with
+                </span>
               </div>
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -84,6 +96,5 @@ export default function Login() {
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }
-
