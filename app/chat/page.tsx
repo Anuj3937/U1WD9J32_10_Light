@@ -1,9 +1,16 @@
-"use client"
+"use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { Nav } from "@/components/nav";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -11,11 +18,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Chat() {
   const [messages, setMessages] = useState([
-    { role: "bot", content: "Hello! I'm here to listen and help. How are you feeling today?" },
+    {
+      role: "bot",
+      content: "Hello! I'm here to listen and help. How are you feeling today?",
+    },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -26,7 +36,11 @@ export default function Chat() {
     const reminderInterval = setInterval(() => {
       setMessages((prev) => [
         ...prev,
-        { role: "bot", content: "Don't forget to record your video diary and take your daily assessment!" },
+        {
+          role: "bot",
+          content:
+            "Don't forget to record your video diary and take your daily assessment!",
+        },
       ]);
     }, 86400000); // Remind every 24 hours
 
@@ -43,7 +57,8 @@ export default function Chat() {
       setTimeout(() => {
         const botResponse = {
           role: "bot",
-          content: "I understand. Can you tell me more about why you're feeling that way?",
+          content:
+            "I understand. Can you tell me more about why you're feeling that way?",
         };
         setMessages((prev) => [...prev, botResponse]);
         setLoading(false);
@@ -58,19 +73,42 @@ export default function Chat() {
         <Card className="w-full flex flex-col flex-grow">
           <CardHeader>
             <CardTitle>Mental Health Chat</CardTitle>
-            <CardDescription>Chat with our AI assistant for support and guidance</CardDescription>
+            <CardDescription>
+              Chat with our AI assistant for support and guidance
+            </CardDescription>
           </CardHeader>
           <CardContent className="flex-grow">
             <ScrollArea className="h-[400px] w-full pr-4 overflow-y-auto">
               {messages.map((message, index) => (
-                <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"} mb-4`}>
-                  <div className={`flex items-start ${message.role === "user" ? "flex-row-reverse" : ""}`}>
+                <div
+                  key={index}
+                  className={`flex ${
+                    message.role === "user" ? "justify-end" : "justify-start"
+                  } mb-4`}
+                >
+                  <div
+                    className={`flex items-start ${
+                      message.role === "user" ? "flex-row-reverse" : ""
+                    }`}
+                  >
                     <Avatar className="w-8 h-8">
-                      <AvatarImage src={message.role === "user" ? "/placeholder-user.jpg" : "/placeholder-bot.jpg"} />
-                      <AvatarFallback>{message.role === "user" ? "U" : "B"}</AvatarFallback>
+                      <AvatarImage
+                        src={
+                          message.role === "user"
+                            ? "/placeholder-user.jpg"
+                            : "/placeholder-bot.jpg"
+                        }
+                      />
+                      <AvatarFallback>
+                        {message.role === "user" ? "U" : "B"}
+                      </AvatarFallback>
                     </Avatar>
                     <div
-                      className={`mx-2 p-3 rounded-lg ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"}`}
+                      className={`mx-2 p-3 rounded-lg ${
+                        message.role === "user"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted"
+                      }`}
                     >
                       {message.content}
                     </div>
@@ -84,7 +122,9 @@ export default function Chat() {
                       <AvatarImage src="/placeholder-bot.jpg" />
                       <AvatarFallback>B</AvatarFallback>
                     </Avatar>
-                    <div className="mx-2 p-3 rounded-lg bg-muted">Typing...</div>
+                    <div className="mx-2 p-3 rounded-lg bg-muted">
+                      Typing...
+                    </div>
                   </div>
                 </div>
               )}
@@ -107,7 +147,10 @@ export default function Chat() {
             </div>
           </CardFooter>
           <div className="p-4 flex justify-center">
-            <Button onClick={() => router.push("/video-diary")} className="bg-blue-500 text-white">
+            <Button
+              onClick={() => router.push("/video-diary")}
+              className="bg-blue-500 text-white"
+            >
               Record Video Diary
             </Button>
           </div>
@@ -116,4 +159,3 @@ export default function Chat() {
     </div>
   );
 }
-
