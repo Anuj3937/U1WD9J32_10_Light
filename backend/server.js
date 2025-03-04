@@ -9,6 +9,7 @@ const connectDB = require("./config/db.js");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware.js");
 const userRoutes = require("./routes/userRoutes.js");
 const paymentRoutes = require("./routes/paymentRoutes.js");
+const therapistRoutes = require("./routes/therapistRoutes.js");
 const allowedOrigins = require("./config/allowedOrigins.js");
 const credentials = require("./middleware/credentials.js");
 
@@ -38,6 +39,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/users", userRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/therapist", therapistRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
