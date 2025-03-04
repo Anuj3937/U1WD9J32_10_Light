@@ -1,60 +1,67 @@
-import { create } from "zustand"
-import { persist } from "zustand/middleware"
-import type { Post, SavedVideo, Group, User, DiaryEntry } from "@/types"
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import type {
+  PostComment,
+  Post,
+  SavedVideo,
+  Group,
+  User,
+  DiaryEntry,
+} from "@/types";
 
 interface AppState {
   // User state
-  user: User | null
-  isAuthenticated: boolean
-  isLoading: boolean
-  error: string | null
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
 
   // Posts state
-  posts: Post[]
-  isPostsLoading: boolean
-  postsError: string | null
+  posts: Post[];
+  isPostsLoading: boolean;
+  postsError: string | null;
 
   // Videos state
-  savedVideos: SavedVideo[]
-  isVideosLoading: boolean
-  videosError: string | null
+  savedVideos: SavedVideo[];
+  isVideosLoading: boolean;
+  videosError: string | null;
 
   // Groups state
-  groups: Group[]
-  isGroupsLoading: boolean
-  groupsError: string | null
+  groups: Group[];
+  isGroupsLoading: boolean;
+  groupsError: string | null;
 
   // Diary entries state
-  diaryEntries: DiaryEntry[]
-  isDiaryLoading: boolean
-  diaryError: string | null
+  diaryEntries: DiaryEntry[];
+  isDiaryLoading: boolean;
+  diaryError: string | null;
 
   // Actions
-  setUser: (user: User | null) => void
-  setError: (error: string | null) => void
-  clearError: () => void
+  setUser: (user: User | null) => void;
+  setError: (error: string | null) => void;
+  clearError: () => void;
 
   // Post actions
-  addPost: (post: Post) => void
-  likePost: (postId: string) => void
-  addComment: (postId: string, comment: Comment) => void
-  deletePost: (postId: string) => void
-  setPosts: (posts: Post[]) => void
+  addPost: (post: Post) => void;
+  likePost: (postId: string) => void;
+  addComment: (postId: string, comment: PostComment) => void;
+  deletePost: (postId: string) => void;
+  setPosts: (posts: Post[]) => void;
 
   // Video actions
-  addVideo: (video: SavedVideo) => void
-  deleteVideo: (videoId: string) => void
-  setVideos: (videos: SavedVideo[]) => void
+  addVideo: (video: SavedVideo) => void;
+  deleteVideo: (videoId: string) => void;
+  setVideos: (videos: SavedVideo[]) => void;
 
   // Group actions
-  joinGroup: (groupId: string) => void
-  leaveGroup: (groupId: string) => void
-  setGroups: (groups: Group[]) => void
+  joinGroup: (groupId: string) => void;
+  leaveGroup: (groupId: string) => void;
+  setGroups: (groups: Group[]) => void;
 
   // Diary actions
-  addDiaryEntry: (entry: DiaryEntry) => void
-  deleteDiaryEntry: (entryId: string) => void
-  setDiaryEntries: (entries: DiaryEntry[]) => void
+  addDiaryEntry: (entry: DiaryEntry) => void;
+  deleteDiaryEntry: (entryId: string) => void;
+  setDiaryEntries: (entries: DiaryEntry[]) => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -90,9 +97,9 @@ export const useAppStore = create<AppState>()(
       // Post actions
       addPost: (post) => {
         try {
-          set((state) => ({ posts: [post, ...state.posts] }))
+          set((state) => ({ posts: [post, ...state.posts] }));
         } catch (error) {
-          set({ postsError: "Failed to add post" })
+          set({ postsError: "Failed to add post" });
         }
       },
       likePost: (postId) => {
@@ -105,11 +112,11 @@ export const useAppStore = create<AppState>()(
                     likes: post.isLiked ? post.likes - 1 : post.likes + 1,
                     isLiked: !post.isLiked,
                   }
-                : post,
+                : post
             ),
-          }))
+          }));
         } catch (error) {
-          set({ postsError: "Failed to like post" })
+          set({ postsError: "Failed to like post" });
         }
       },
       addComment: (postId, comment) => {
@@ -119,22 +126,25 @@ export const useAppStore = create<AppState>()(
               post.id === postId
                 ? {
                     ...post,
-                    comments: [...post.comments, comment],
+                    comments: [
+                      ...(post.comments || []),
+                      comment,
+                    ] as PostComment[], // ✅ Ensures `comments` is always an array
                   }
-                : post,
+                : post
             ),
-          }))
+          }));
         } catch (error) {
-          set({ postsError: "Failed to add comment" })
+          set({ postsError: "Failed to add comment" });
         }
       },
       deletePost: (postId) => {
         try {
           set((state) => ({
             posts: state.posts.filter((post) => post.id !== postId),
-          }))
+          }));
         } catch (error) {
-          set({ postsError: "Failed to delete post" })
+          set({ postsError: "Failed to delete post" });
         }
       },
       setPosts: (posts) => set({ posts, isPostsLoading: false }),
@@ -144,21 +154,24 @@ export const useAppStore = create<AppState>()(
         try {
           set((state) => ({
             savedVideos: [video, ...state.savedVideos],
-          }))
+          }));
         } catch (error) {
-          set({ videosError: "Failed to save video" })
+          set({ videosError: "Failed to save video" });
         }
       },
       deleteVideo: (videoId) => {
         try {
           set((state) => ({
-            savedVideos: state.savedVideos.filter((video) => video.id !== videoId),
-          }))
+            savedVideos: state.savedVideos.filter(
+              (video) => video.id !== videoId
+            ),
+          }));
         } catch (error) {
-          set({ videosError: "Failed to delete video" })
+          set({ videosError: "Failed to delete video" });
         }
       },
-      setVideos: (videos) => set({ savedVideos: videos, isVideosLoading: false }),
+      setVideos: (videos) =>
+        set({ savedVideos: videos, isVideosLoading: false }),
 
       // Group actions
       joinGroup: (groupId) => {
@@ -171,11 +184,11 @@ export const useAppStore = create<AppState>()(
                     isJoined: true,
                     members: group.members + 1,
                   }
-                : group,
+                : group
             ),
-          }))
+          }));
         } catch (error) {
-          set({ groupsError: "Failed to join group" })
+          set({ groupsError: "Failed to join group" });
         }
       },
       leaveGroup: (groupId) => {
@@ -188,11 +201,11 @@ export const useAppStore = create<AppState>()(
                     isJoined: false,
                     members: group.members - 1,
                   }
-                : group,
+                : group
             ),
-          }))
+          }));
         } catch (error) {
-          set({ groupsError: "Failed to leave group" })
+          set({ groupsError: "Failed to leave group" });
         }
       },
       setGroups: (groups) => set({ groups, isGroupsLoading: false }),
@@ -202,21 +215,24 @@ export const useAppStore = create<AppState>()(
         try {
           set((state) => ({
             diaryEntries: [entry, ...state.diaryEntries],
-          }))
+          }));
         } catch (error) {
-          set({ diaryError: "Failed to save diary entry" })
+          set({ diaryError: "Failed to save diary entry" });
         }
       },
       deleteDiaryEntry: (entryId) => {
         try {
           set((state) => ({
-            diaryEntries: state.diaryEntries.filter((entry) => entry.id !== entryId),
-          }))
+            diaryEntries: state.diaryEntries.filter(
+              (entry) => entry.id !== entryId
+            ),
+          }));
         } catch (error) {
-          set({ diaryError: "Failed to delete diary entry" })
+          set({ diaryError: "Failed to delete diary entry" });
         }
       },
-      setDiaryEntries: (entries) => set({ diaryEntries: entries, isDiaryLoading: false }),
+      setDiaryEntries: (entries) =>
+        set({ diaryEntries: entries, isDiaryLoading: false }),
     }),
     {
       name: "mental-health-app-storage",
@@ -227,7 +243,6 @@ export const useAppStore = create<AppState>()(
         groups: state.groups,
         diaryEntries: state.diaryEntries,
       }),
-    },
-  ),
-)
-
+    }
+  )
+);
