@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Nav } from "@/components/nav"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -9,138 +10,352 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/use-toast"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Brain, Activity, HeartPulse, Frown, Puzzle, Workflow, Zap, Gauge, Utensils } from "lucide-react"
 
-// Define assessment categories and questions
-const assessmentSections = [
+// Define the test types
+const testTypes = [
   {
-    id: "emotional",
-    title: "Emotional Well-being",
-    questions: [
-      {
-        id: "e1",
-        text: "How often have you felt down, depressed, or hopeless in the past two weeks?",
-        options: [
-          { value: "0", label: "Not at all" },
-          { value: "1", label: "Several days" },
-          { value: "2", label: "More than half the days" },
-          { value: "3", label: "Nearly every day" },
-        ],
-      },
-      // Add more emotional questions
-    ],
+    id: "adhd",
+    title: "ADHD Test",
+    description: "Find out if you're experiencing the most common symptoms of ADHD.",
+    icon: <Activity className="h-8 w-8 text-blue-500" />,
+    questions: 10,
+    time: "5-7 minutes",
   },
   {
-    id: "academic",
-    title: "Academic Stress",
-    questions: [
-      {
-        id: "a1",
-        text: "How overwhelmed do you feel by your academic workload?",
-        options: [
-          { value: "0", label: "Not at all" },
-          { value: "1", label: "Slightly" },
-          { value: "2", label: "Moderately" },
-          { value: "3", label: "Extremely" },
-        ],
-      },
-      // Add more academic questions
-    ],
+    id: "anxiety",
+    title: "Anxiety Test",
+    description: "Find out if your anxiety could be a sign of something more serious.",
+    icon: <HeartPulse className="h-8 w-8 text-red-500" />,
+    questions: 12,
+    time: "6-8 minutes",
   },
   {
-    id: "social",
-    title: "Social Support",
-    questions: [
-      {
-        id: "s1",
-        text: "How satisfied are you with your social connections and support system?",
-        options: [
-          { value: "3", label: "Very satisfied" },
-          { value: "2", label: "Somewhat satisfied" },
-          { value: "1", label: "Somewhat dissatisfied" },
-          { value: "0", label: "Very dissatisfied" },
-        ],
-      },
-      // Add more social questions
-    ],
+    id: "bipolar",
+    title: "Bipolar Test",
+    description: "Find out if you are showing some of the symptoms of Bipolar Disorder.",
+    icon: <Gauge className="h-8 w-8 text-purple-500" />,
+    questions: 15,
+    time: "7-10 minutes",
+  },
+  {
+    id: "depression",
+    title: "Depression Test",
+    description: "If you're unsure if you are depressed, our 5-minute test can help evaluate your mood.",
+    icon: <Frown className="h-8 w-8 text-gray-500" />,
+    questions: 10,
+    time: "5-7 minutes",
+  },
+  {
+    id: "autism",
+    title: "Autism Test",
+    description: "Are you experiencing the most common symptoms of autism? Find out using our online test.",
+    icon: <Puzzle className="h-8 w-8 text-green-500" />,
+    questions: 15,
+    time: "8-10 minutes",
+  },
+  {
+    id: "ocd",
+    title: "OCD Test",
+    description: "Find out if you are experiencing the most common symptoms of OCD.",
+    icon: <Workflow className="h-8 w-8 text-orange-500" />,
+    questions: 12,
+    time: "6-8 minutes",
+  },
+  {
+    id: "ptsd",
+    title: "PTSD Test",
+    description: "Are you experiencing the most common symptoms of PTSD? Find out using our online test.",
+    icon: <Zap className="h-8 w-8 text-yellow-500" />,
+    questions: 12,
+    time: "6-8 minutes",
+  },
+  {
+    id: "stress",
+    title: "Stress Test",
+    description: "Find out if your feelings are a sign of something more serious.",
+    icon: <Brain className="h-8 w-8 text-teal-500" />,
+    questions: 10,
+    time: "5-7 minutes",
+  },
+  {
+    id: "binge-eating",
+    title: "Binge Eating Test",
+    description: "Find out if your eating habits could be a sign of a binge eating disorder.",
+    icon: <Utensils className="h-8 w-8 text-indigo-500" />,
+    questions: 12,
+    time: "6-8 minutes",
+  },
+  {
+    id: "anorexia",
+    title: "Anorexia Test",
+    description: "Find out if you are experiencing the most common symptoms of Anorexia.",
+    icon: <Utensils className="h-8 w-8 text-pink-500" />,
+    questions: 12,
+    time: "6-8 minutes",
+  },
+  {
+    id: "orthorexia",
+    title: "Orthorexia Test",
+    description: "Find out if you are experiencing the most common symptoms of Orthorexia.",
+    icon: <Utensils className="h-8 w-8 text-emerald-500" />,
+    questions: 10,
+    time: "5-7 minutes",
+  },
+  {
+    id: "bulimia",
+    title: "Bulimia Test",
+    description: "Find out if you are experiencing the most common symptoms of Bulimia.",
+    icon: <Utensils className="h-8 w-8 text-rose-500" />,
+    questions: 12,
+    time: "6-8 minutes",
   },
 ]
 
+// Sample questions for each test type
+const testQuestions = {
+  adhd: [
+    {
+      id: "adhd1",
+      text: "How often do you have difficulty getting things in order when you have to do a task that requires organization?",
+      options: [
+        { value: "0", label: "Never" },
+        { value: "1", label: "Rarely" },
+        { value: "2", label: "Sometimes" },
+        { value: "3", label: "Often" },
+        { value: "4", label: "Very Often" },
+      ],
+    },
+    {
+      id: "adhd2",
+      text: "How often do you have difficulty concentrating on what people say to you, even when they are speaking to you directly?",
+      options: [
+        { value: "0", label: "Never" },
+        { value: "1", label: "Rarely" },
+        { value: "2", label: "Sometimes" },
+        { value: "3", label: "Often" },
+        { value: "4", label: "Very Often" },
+      ],
+    },
+    {
+      id: "adhd3",
+      text: "How often do you fidget or squirm with your hands or feet when you have to sit down for a long time?",
+      options: [
+        { value: "0", label: "Never" },
+        { value: "1", label: "Rarely" },
+        { value: "2", label: "Sometimes" },
+        { value: "3", label: "Often" },
+        { value: "4", label: "Very Often" },
+      ],
+    },
+    // Add more questions to reach 10
+  ],
+  anxiety: [
+    {
+      id: "anx1",
+      text: "How often have you been bothered by feeling nervous, anxious, or on edge over the last 2 weeks?",
+      options: [
+        { value: "0", label: "Not at all" },
+        { value: "1", label: "Several days" },
+        { value: "2", label: "More than half the days" },
+        { value: "3", label: "Nearly every day" },
+      ],
+    },
+    {
+      id: "anx2",
+      text: "How often have you been bothered by not being able to stop or control worrying over the last 2 weeks?",
+      options: [
+        { value: "0", label: "Not at all" },
+        { value: "1", label: "Several days" },
+        { value: "2", label: "More than half the days" },
+        { value: "3", label: "Nearly every day" },
+      ],
+    },
+    {
+      id: "anx3",
+      text: "How often have you been bothered by worrying too much about different things over the last 2 weeks?",
+      options: [
+        { value: "0", label: "Not at all" },
+        { value: "1", label: "Several days" },
+        { value: "2", label: "More than half the days" },
+        { value: "3", label: "Nearly every day" },
+      ],
+    },
+    // Add more questions to reach 12
+  ],
+  // Add questions for other test types
+}
+
 export default function DetailedAssessment() {
-  const [currentSection, setCurrentSection] = useState(0)
+  const [selectedTest, setSelectedTest] = useState<string | null>(null)
+  const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [notes, setNotes] = useState<string>("")
   const { toast } = useToast()
+  const router = useRouter()
 
-  const currentSectionData = assessmentSections[currentSection]
-  const progress = (currentSection / assessmentSections.length) * 100
+  // If a test is selected, get its questions
+  const questions = selectedTest ? testQuestions[selectedTest as keyof typeof testQuestions] || [] : []
+  const progress = selectedTest ? ((currentQuestion + 1) / questions.length) * 100 : 0
+
+  const handleTestSelect = (testId: string) => {
+    setSelectedTest(testId)
+    setCurrentQuestion(0)
+    setAnswers({})
+    setNotes("")
+  }
 
   const handleAnswer = (questionId: string, value: string) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }))
   }
 
   const handleNext = () => {
-    const unansweredQuestions = currentSectionData.questions.filter((q) => !answers[q.id])
+    const currentQuestionData = questions[currentQuestion]
 
-    if (unansweredQuestions.length > 0) {
+    if (!answers[currentQuestionData.id]) {
       toast({
-        title: "Please answer all questions",
-        description: "All questions in this section must be answered before proceeding.",
+        title: "Please answer the question",
+        description: "You need to select an option before proceeding.",
         variant: "destructive",
       })
       return
     }
 
-    if (currentSection < assessmentSections.length - 1) {
-      setCurrentSection(currentSection + 1)
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1)
     } else {
-      // Calculate results and show recommendations
+      // Last question, complete the test
       handleComplete()
     }
   }
 
-  const handleComplete = () => {
-    // Here you would typically:
-    // 1. Calculate scores for each category
-    // 2. Generate personalized recommendations
-    // 3. Save results to the user's profile
-    // 4. Show appropriate resources and next steps
-
-    // For now, we'll just redirect to a results page
-    window.location.href = "/assessment/results"
+  const handlePrevious = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1)
+    } else {
+      // First question, go back to test selection
+      setSelectedTest(null)
+    }
   }
+
+  const handleComplete = () => {
+    // Store test results in localStorage or state management
+    const testResults = {
+      testType: selectedTest,
+      answers,
+      notes,
+      timestamp: new Date().toISOString(),
+    }
+
+    // In a real app, you would save this to your backend
+    console.log("Test results:", testResults)
+
+    // Navigate to results page with the test type
+    router.push(`/assessment/results?test=${selectedTest}`)
+  }
+
+  // If no test is selected, show the test selection screen
+  if (!selectedTest) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Nav />
+        <main className="max-w-7xl mx-auto mt-8 p-4">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold mb-2">Detailed Mental Health Assessments</h1>
+            <p className="text-muted-foreground">
+              Select a specific assessment to gain deeper insights into your mental well-being.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {testTypes.map((test) => (
+              <Card
+                key={test.id}
+                className="cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => handleTestSelect(test.id)}
+              >
+                <CardHeader className="flex flex-row items-start space-y-0 pb-2">
+                  <div className="flex-1">
+                    <CardTitle>{test.title}</CardTitle>
+                    <CardDescription>{test.description}</CardDescription>
+                  </div>
+                  <div className="ml-4">{test.icon}</div>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>{test.questions} questions</span>
+                    <span>Takes {test.time}</span>
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Button className="w-full">Start Assessment</Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        </main>
+      </div>
+    )
+  }
+
+  // Show the selected test questions
+  const currentQuestionData = questions[currentQuestion]
+  const selectedTestInfo = testTypes.find((t) => t.id === selectedTest)
 
   return (
     <div className="min-h-screen bg-background">
       <Nav />
       <main className="max-w-4xl mx-auto mt-8 p-4">
         <div className="mb-6">
+          <div className="flex items-center mb-2">
+            <Button variant="ghost" onClick={() => setSelectedTest(null)} className="mr-2">
+              ← Back to Tests
+            </Button>
+            <h1 className="text-2xl font-bold">{selectedTestInfo?.title}</h1>
+          </div>
           <Progress value={progress} className="mb-2" />
           <p className="text-sm text-muted-foreground">
-            Section {currentSection + 1} of {assessmentSections.length}
+            Question {currentQuestion + 1} of {questions.length}
           </p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>{currentSectionData.title}</CardTitle>
-            <CardDescription>Please answer honestly for the most accurate assessment</CardDescription>
+            <CardTitle>{selectedTestInfo?.title} Assessment</CardTitle>
+            <CardDescription>Please answer honestly for the most accurate results</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            {currentSectionData.questions.map((question) => (
-              <div key={question.id} className="space-y-4">
-                <p className="font-medium">{question.text}</p>
-                <RadioGroup value={answers[question.id]} onValueChange={(value) => handleAnswer(question.id, value)}>
-                  {question.options.map((option) => (
+            {currentQuestionData && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <Avatar className="w-16 h-16">
+                    <AvatarImage src={`/placeholder.svg?height=100&width=100`} />
+                    <AvatarFallback>Q</AvatarFallback>
+                  </Avatar>
+                  <p className="text-lg">{currentQuestionData.text}</p>
+                </div>
+                <RadioGroup
+                  value={answers[currentQuestionData.id]}
+                  onValueChange={(value) => handleAnswer(currentQuestionData.id, value)}
+                  className="space-y-2"
+                >
+                  {currentQuestionData.options.map((option) => (
                     <div key={option.value} className="flex items-center space-x-2">
-                      <RadioGroupItem value={option.value} id={`${question.id}-${option.value}`} />
-                      <Label htmlFor={`${question.id}-${option.value}`}>{option.label}</Label>
+                      <RadioGroupItem value={option.value} id={`${currentQuestionData.id}-${option.value}`} />
+                      <Label
+                        htmlFor={`${currentQuestionData.id}-${option.value}`}
+                        className="w-full p-3 rounded-md hover:bg-muted cursor-pointer"
+                      >
+                        {option.label}
+                      </Label>
                     </div>
                   ))}
                 </RadioGroup>
               </div>
-            ))}
+            )}
 
-            {currentSection === assessmentSections.length - 1 && (
+            {currentQuestion === questions.length - 1 && (
               <div className="space-y-2">
                 <Label htmlFor="notes">Additional Notes (Optional)</Label>
                 <Textarea
@@ -153,20 +368,13 @@ export default function DetailedAssessment() {
             )}
           </CardContent>
           <CardFooter className="flex justify-between">
-            <Button
-              variant="outline"
-              onClick={() => setCurrentSection(currentSection - 1)}
-              disabled={currentSection === 0}
-            >
+            <Button variant="outline" onClick={handlePrevious}>
               Previous
             </Button>
-            <Button onClick={handleNext}>
-              {currentSection === assessmentSections.length - 1 ? "Complete" : "Next"}
-            </Button>
+            <Button onClick={handleNext}>{currentQuestion === questions.length - 1 ? "Complete" : "Next"}</Button>
           </CardFooter>
         </Card>
       </main>
     </div>
   )
 }
-

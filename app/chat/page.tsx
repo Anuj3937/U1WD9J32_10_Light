@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";  
 import { Nav } from "@/components/nav";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,8 +15,8 @@ export default function Chat() {
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef(null);
-  const router = useRouter();
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);  
+  const router = useRouter();  
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -88,7 +88,7 @@ export default function Chat() {
                   </div>
                 </div>
               )}
-              <div ref={messagesEndRef} />
+              <div ref={messagesEndRef} /> {/* ✅ Corrected */}
             </ScrollArea>
           </CardContent>
           <CardFooter>
@@ -116,4 +116,3 @@ export default function Chat() {
     </div>
   );
 }
-
