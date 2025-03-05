@@ -38,6 +38,7 @@ const registerTherapist = asyncHandler(async (req, res) => {
     primarySpecialization,
     professionalBio,
     yearsOfExperience,
+    isPremium,
   } = req.body;
 
   const therapistExists = await Therapist.findOne({ email });
@@ -56,6 +57,7 @@ const registerTherapist = asyncHandler(async (req, res) => {
     primarySpecialization,
     professionalBio,
     yearsOfExperience,
+    isPremium,
   });
 
   if (therapist) {
