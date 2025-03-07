@@ -57,10 +57,35 @@ export default function Community() {
       <main className="max-w-7xl mx-auto mt-8 p-4">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Safe Circle Community</h1>
-          <Button onClick={() => setShowCreatePost(true)}>
-            <Plus className="w-4 h-4 mr-2" />
-            Create Post
-          </Button>
+          <div className="flex gap-2">
+            <div className="relative w-64">
+              <input
+                type="text"
+                placeholder="Search groups..."
+                className="w-full px-4 py-2 rounded-md border border-input bg-background"
+              />
+              <button className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 text-muted-foreground"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </button>
+            </div>
+            <Button onClick={() => setShowCreatePost(true)}>
+              <Plus className="w-4 h-4 mr-2" />
+              Create Post
+            </Button>
+          </div>
         </div>
 
         <Tabs defaultValue="groups" className="space-y-4">
@@ -69,6 +94,27 @@ export default function Community() {
             <TabsTrigger value="feed">Community Feed</TabsTrigger>
             <TabsTrigger value="my-groups">My Groups</TabsTrigger>
           </TabsList>
+
+          <div className="flex flex-wrap gap-2 mt-4 mb-4">
+            <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
+              All Categories
+            </Badge>
+            <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
+              Anxiety
+            </Badge>
+            <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
+              Depression
+            </Badge>
+            <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
+              Stress
+            </Badge>
+            <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
+              ADHD
+            </Badge>
+            <Badge variant="outline" className="cursor-pointer hover:bg-primary hover:text-primary-foreground">
+              Eating Disorders
+            </Badge>
+          </div>
 
           <TabsContent value="groups" className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

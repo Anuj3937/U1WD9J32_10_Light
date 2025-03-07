@@ -1,13 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type {
-  PostComment,
-  Post,
-  SavedVideo,
-  Group,
-  User,
-  DiaryEntry,
-} from "@/types";
+import type { Post, SavedVideo, Group, User, DiaryEntry } from "@/types";
 
 interface AppState {
   // User state
@@ -44,7 +37,7 @@ interface AppState {
   // Post actions
   addPost: (post: Post) => void;
   likePost: (postId: string) => void;
-  addComment: (postId: string, comment: PostComment) => void;
+  addComment: (postId: string, comment: Comment) => void;
   deletePost: (postId: string) => void;
   setPosts: (posts: Post[]) => void;
 
@@ -126,10 +119,7 @@ export const useAppStore = create<AppState>()(
               post.id === postId
                 ? {
                     ...post,
-                    comments: [
-                      ...(post.comments || []),
-                      comment,
-                    ] as PostComment[], // ✅ Ensures `comments` is always an array
+                    comments: [...post.comments, comment],
                   }
                 : post
             ),

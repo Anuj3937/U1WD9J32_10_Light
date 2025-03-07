@@ -14,8 +14,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuthStore } from "@/lib/auth";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+
 
 export default function Signup() {
   const [error, setError] = useState("");

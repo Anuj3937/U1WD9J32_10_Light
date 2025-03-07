@@ -12,6 +12,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { Progress } from "@/components/ui/progress"
 
 type StoryChoice = {
   text: string
@@ -159,18 +160,109 @@ export default function StoryPage() {
     <div className="min-h-screen bg-background">
       <Nav />
       <main className="max-w-4xl mx-auto mt-8 p-4">
+        {/* Story progress indicator */}
+        <div className="mb-4 flex items-center gap-2">
+          <div className="flex-1 h-1 bg-muted overflow-hidden rounded-full">
+            <div
+              className="h-full bg-primary"
+              style={{
+                width: `${(Object.keys(story).indexOf(currentScene) / (Object.keys(story).length - 1)) * 100}%`,
+                transition: "width 0.5s ease-in-out",
+              }}
+            ></div>
+          </div>
+          <span className="text-sm text-muted-foreground">
+            {Math.round((Object.keys(story).indexOf(currentScene) / (Object.keys(story).length - 1)) * 100)}%
+          </span>
+        </div>
+
         <Card className="mb-8">
           <CardHeader>
-            <CardTitle>{scene.title}</CardTitle>
-            <CardDescription>Interactive Story Experience</CardDescription>
+            <div className="flex justify-between items-center">
+              <div>
+                <CardTitle>{scene.title}</CardTitle>
+                <CardDescription>Interactive Story Experience</CardDescription>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                    <path d="M3 3v5h5"></path>
+                  </svg>
+                  <span className="ml-1">Restart</span>
+                </Button>
+                <Button variant="ghost" size="sm">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 20h9"></path>
+                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                  </svg>
+                  <span className="ml-1">Journal</span>
+                </Button>
+              </div>
+            </div>
           </CardHeader>
           <CardContent className="space-y-4">
             {scene.image && (
               <div className="aspect-video relative rounded-lg overflow-hidden">
                 <img src={scene.image || "/placeholder.svg"} alt="Scene" className="object-cover w-full h-full" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
               </div>
             )}
             <p className="text-lg">{scene.description}</p>
+
+            {/* Character emotions visualization */}
+            {currentScene !== "end" && (
+              <div className="flex justify-center gap-4 py-2">
+                <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                    <span className="text-xl">😊</span>
+                  </div>
+                  <span className="text-xs mt-1">Confidence</span>
+                  <span className="text-sm font-medium">{metrics.confidence}/10</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                    <span className="text-xl">😰</span>
+                  </div>
+                  <span className="text-xs mt-1">Anxiety</span>
+                  <span className="text-sm font-medium">{metrics.anxiety}/10</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                    <span className="text-xl">👥</span>
+                  </div>
+                  <span className="text-xs mt-1">Social</span>
+                  <span className="text-sm font-medium">{metrics.socialComfort}/10</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                    <span className="text-xl">💪</span>
+                  </div>
+                  <span className="text-xs mt-1">Resilience</span>
+                  <span className="text-sm font-medium">{metrics.resilience}/10</span>
+                </div>
+              </div>
+            )}
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
             <div className="w-full space-y-2">
@@ -178,7 +270,7 @@ export default function StoryPage() {
                 <Button
                   key={index}
                   variant="outline"
-                  className="w-full text-left justify-start h-auto p-4"
+                  className="w-full text-left justify-start h-auto p-4 hover:bg-muted transition-colors"
                   onClick={() => handleChoice(choice)}
                 >
                   {choice.text}
@@ -202,22 +294,34 @@ export default function StoryPage() {
                   <CardTitle>Emotional Metrics</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>Anxiety Management</span>
-                      <span>{metrics.anxiety}/10</span>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span>Anxiety Management</span>
+                        <span>{metrics.anxiety}/10</span>
+                      </div>
+                      <Progress value={metrics.anxiety * 10} className="h-2" />
                     </div>
-                    <div className="flex justify-between">
-                      <span>Self-Confidence</span>
-                      <span>{metrics.confidence}/10</span>
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span>Self-Confidence</span>
+                        <span>{metrics.confidence}/10</span>
+                      </div>
+                      <Progress value={metrics.confidence * 10} className="h-2" />
                     </div>
-                    <div className="flex justify-between">
-                      <span>Social Comfort</span>
-                      <span>{metrics.socialComfort}/10</span>
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span>Social Comfort</span>
+                        <span>{metrics.socialComfort}/10</span>
+                      </div>
+                      <Progress value={metrics.socialComfort * 10} className="h-2" />
                     </div>
-                    <div className="flex justify-between">
-                      <span>Resilience</span>
-                      <span>{metrics.resilience}/10</span>
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span>Resilience</span>
+                        <span>{metrics.resilience}/10</span>
+                      </div>
+                      <Progress value={metrics.resilience * 10} className="h-2" />
                     </div>
                   </div>
                 </CardContent>

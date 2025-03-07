@@ -1,7 +1,6 @@
 import axios from "axios";
+import qs from "qs";
 import { create } from "zustand";
-import qs from "qs"; // For form-encoded requests
-
 const API_URL = "http://localhost:5000/api/users"; // Update this if needed
 
 interface AuthState {

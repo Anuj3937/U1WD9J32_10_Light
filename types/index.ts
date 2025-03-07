@@ -6,7 +6,7 @@ export type User = {
   role: "user" | "therapist";
 };
 
-export type PostComment = {
+export type Comment = {
   id: string;
   content: string;
   author: User;
@@ -19,7 +19,7 @@ export type Post = {
   content: string;
   image?: string;
   likes: number;
-  comments: PostComment[];
+  comments: Comment[];
   timestamp: string;
   group?: string;
   isLiked?: boolean;
