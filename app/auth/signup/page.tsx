@@ -14,16 +14,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useAuthStore } from "@/lib/auth";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
+import { registerWithEmail, signInWithGoogle } from "@/lib/auth"; // Import from auth.ts
+import { updateProfile } from "firebase/auth";
+import { ChromeIcon as Google } from "lucide-react"; // Import Google icon
 
 export default function Signup() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const register = useAuthStore((state) => state.register);
 
+  // Handle Email/Password Signup
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
@@ -36,10 +37,45 @@ export default function Signup() {
     const password = formData.get("password") as string;
 
     try {
-      await register(firstName, lastName, email, password);
+      // Register user with email & password
+      const user = await registerWithEmail(email, password);
+      if (!user) throw new Error("Signup failed. Please try again.");
+
+      // Update user profile with full name
+      await updateProfile(user, { displayName: `${firstName} ${lastName}` });
+
+      // Redirect to dashboard
       router.push("/dashboard");
     } catch (err: any) {
-      setError(err.message || "Registration failed.");
+      switch (err.code) {
+        case "auth/email-already-in-use":
+          setError("Email is already in use. Try logging in.");
+          break;
+        case "auth/weak-password":
+          setError("Password should be at least 6 characters.");
+          break;
+        case "auth/invalid-email":
+          setError("Invalid email format.");
+          break;
+        default:
+          setError(err.message || "Failed to create an account.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle Google Sign-in
+  const handleGoogleSignIn = async () => {
+    setError("");
+    setLoading(true);
+    try {
+      const user = await signInWithGoogle();
+      if (!user) throw new Error("Google Sign-in failed.");
+
+      router.push("/dashboard");
+    } catch (err: any) {
+      setError("Google Sign-in failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -85,6 +121,18 @@ export default function Signup() {
               {loading ? "Creating Account..." : "Create Account"}
             </Button>
           </form>
+          <div className="relative my-4 text-center text-sm text-muted-foreground">
+            <span className="bg-background px-2">OR</span>
+          </div>
+          <Button
+            onClick={handleGoogleSignIn}
+            variant="outline"
+            className="w-full flex items-center gap-2"
+            disabled={loading}
+          >
+            <Google size={20} />
+            {loading ? "Signing in..." : "Sign in with Google"}
+          </Button>
         </CardContent>
         <CardFooter>
           <div className="text-sm text-muted-foreground">

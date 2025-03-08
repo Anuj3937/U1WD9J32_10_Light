@@ -15,25 +15,61 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ChromeIcon as Google, Github } from "lucide-react";
-import { useAuthStore } from "@/lib/auth"; // Import Zustand auth store
+import { ChromeIcon as Google } from "lucide-react";
+import { loginWithEmail, signInWithGoogle } from "@/lib/auth"; // Import auth methods
 
 export default function Login() {
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const login = useAuthStore((state) => state.login); // Get login method from Zustand store
 
+  // Handle Email/Password Login
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
+
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
     try {
-      await login(email, password);
-      router.push("/dashboard"); // Redirect on successful login
+      const user = await loginWithEmail(email, password);
+      if (!user) throw new Error("Invalid email or password.");
+
+      router.push("/dashboard"); // Redirect after successful login
     } catch (err: any) {
-      setError(err.message || "Login failed. Please try again.");
+      switch (err.code) {
+        case "auth/user-not-found":
+          setError("No user found with this email.");
+          break;
+        case "auth/wrong-password":
+          setError("Incorrect password.");
+          break;
+        case "auth/too-many-requests":
+          setError("Too many failed attempts. Try again later.");
+          break;
+        default:
+          setError(err.message || "Failed to sign in.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle Google Sign-in
+  const handleGoogleSignIn = async () => {
+    setError("");
+    setLoading(true);
+    try {
+      const user = await signInWithGoogle();
+      if (!user) throw new Error("Google Sign-in failed.");
+
+      router.push("/dashboard");
+    } catch (err) {
+      setError("Google Sign-in failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,13 +83,14 @@ export default function Login() {
         <CardContent>
           <div className="grid gap-4">
             <div className="grid grid-cols-2 gap-4">
-              <Button variant="outline">
-                <Google className="mr-2 h-4 w-4" />
-                Google
-              </Button>
-              <Button variant="outline">
-                <Github className="mr-2 h-4 w-4" />
-                Github
+              <Button
+                variant="outline"
+                onClick={handleGoogleSignIn}
+                disabled={loading}
+                className="w-full flex items-center gap-2"
+              >
+                <Google className="h-4 w-4" />
+                {loading ? "Signing in..." : "Google"}
               </Button>
             </div>
             <div className="relative">
@@ -80,8 +117,8 @@ export default function Login() {
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
-              <Button type="submit" className="w-full">
-                Sign In
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Signing in..." : "Sign In"}
               </Button>
             </form>
           </div>
