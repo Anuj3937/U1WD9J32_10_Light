@@ -52,7 +52,7 @@ export function Nav() {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center">
-              <span className="text-2xl font-bold">MindfulStudent</span>
+              <span className="text-2xl font-bold">MindScape</span>
             </Link>
             <div className="hidden md:flex md:items-center md:ml-10 space-x-4">
               <Button asChild variant="ghost">
