@@ -21,8 +21,9 @@ import {
   MessageCircle,
   Target,
   Bell,
-  Book,
+  AlertTriangle,
   Menu,
+  Trophy,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { auth } from "@/lib/firebaseConfig";
@@ -54,6 +55,11 @@ export function Nav() {
           <Link href="/" className="text-2xl font-bold">
             MindScape
           </Link>
+          <Button asChild variant="ghost">
+            <Link href="/achievements">
+              <Trophy className="w-4 h-4 mr-2" />
+            </Link>
+          </Button>
         </div>
 
         {/* Center Section - Desktop Navigation */}
@@ -63,14 +69,14 @@ export function Nav() {
               <BarChart2 className="w-4 h-4 mr-2" /> Dashboard
             </Link>
           </Button>
-          <Button asChild variant="ghost">
+          {/* <Button asChild variant="ghost">
             <Link href="/goals">
               <Target className="w-4 h-4 mr-2" /> Goals
             </Link>
-          </Button>
+          </Button> */}
           <Button asChild variant="ghost">
             <Link href="/video-diary">
-              <Video className="w-4 h-4 mr-2" /> Diary
+              <Video className="w-4 h-4 mr-2" /> Video Diary
             </Link>
           </Button>
           <Button asChild variant="ghost">
@@ -78,7 +84,7 @@ export function Nav() {
               <Users className="w-4 h-4 mr-2" /> Community
             </Link>
           </Button>
-          <Button asChild variant="ghost">
+          {/* <Button asChild variant="ghost">
             <Link href="/reels">
               <Film className="w-4 h-4 mr-2" /> Reels
             </Link>
@@ -87,7 +93,7 @@ export function Nav() {
             <Link href="/story">
               <Book className="w-4 h-4 mr-2" /> Interactive Story
             </Link>
-          </Button>
+          </Button> */}
           <Button asChild variant="ghost">
             <Link href="/chat">
               <MessageCircle className="w-4 h-4 mr-2" /> AI Therapist
@@ -97,11 +103,11 @@ export function Nav() {
 
         {/* Right Section - Controls */}
         <div className="flex items-center space-x-4">
-          {/* <Button asChild variant="default">
-            <Link href="/chat">
-              <MessageCircle className="w-4 h-4 mr-2" /> Chat Support
+          <Button asChild variant="destructive">
+            <Link href="/assessment/crisis">
+              <AlertTriangle className="w-4 h-4 mr-2" /> Get Help
             </Link>
-          </Button> */}
+          </Button>
           <ThemeToggle />
           <Button variant="ghost" size="icon">
             <Bell className="h-5 w-5" />
@@ -163,23 +169,23 @@ export function Nav() {
           <Link href="/dashboard" className="block">
             Dashboard
           </Link>
-          <Link href="/goals" className="block">
+          {/* <Link href="/goals" className="block">
             Goals
-          </Link>
+          </Link> */}
           <Link href="/video-diary" className="block">
-            Diary
+            Video Diary
           </Link>
           <Link href="/community" className="block">
             Community
           </Link>
-          <Link href="/reels" className="block">
+          {/* <Link href="/reels" className="block">
             Reels
           </Link>
           <Link href="/story" className="block">
             Interactive Story
-          </Link>
+          </Link> */}
           <Link href="/chat" className="block">
-            Chat Support
+            AI Therapist
           </Link>
           {user ? (
             <>
