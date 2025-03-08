@@ -205,7 +205,7 @@ export default function Assessment() {
                 Retake Assessment
               </Button>
               <Button asChild>
-                <a href="/dashboard">View Dashboard</a>
+                <a href="/resources">View Resources</a>
               </Button>
             </CardFooter>
           </Card>
@@ -258,4 +258,3 @@ export default function Assessment() {
     </div>
   )
 }
-

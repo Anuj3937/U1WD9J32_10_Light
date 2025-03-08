@@ -22,13 +22,25 @@ export default function Onboarding() {
           animationFrom={{ opacity: 0, transform: "translate3d(0,20px,0)" }}
           animationTo={{ opacity: 1, transform: "translate3d(0,0,0)" }}
         />
+
         <div className="mt-6 space-y-4">
           <Button asChild size="lg" variant="outline">
             <Link href="/assessment" className="text-lg">
               Take a Quick Mental Health Test
             </Link>
           </Button>
+
+          {/* Added Interactive Story Section */}
+          <p className="mt-4 text-gray-500 dark:text-gray-400">
+            Have 10 minutes? Explore an interactive story to discover more about yourself.
+          </p>
+          <Button asChild size="lg" variant="outline">
+            <Link href="/story" className="text-lg">
+              Start the Journey
+            </Link>
+          </Button>
         </div>
+
         {isSociallyAwkward === null && (
           <div className="mt-6">
             <p className="text-lg text-gray-500 dark:text-gray-400">
@@ -52,6 +64,7 @@ export default function Onboarding() {
             </div>
           </div>
         )}
+
         {isSociallyAwkward !== null && (
           <div className="mt-6 space-y-4">
             {isSociallyAwkward ? (

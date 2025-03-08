@@ -60,7 +60,7 @@ export default function Home() {
               },
               {
                 text: "I’d like to explore a supportive community",
-                link: "/chatrooms",
+                link: "/auth/login",
               },
               { text: "I just want to look around", link: "/onboarding" },
             ].map((option, index) => (
