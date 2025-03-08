@@ -13,7 +13,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Brain, Activity, HeartPulse, Frown, Puzzle, Workflow, Zap, Gauge, Utensils } from "lucide-react"
 
-// Define the test types
+
 const testTypes = [
   {
     id: "adhd",
