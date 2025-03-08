@@ -122,7 +122,7 @@ export default function Home() {
             </ul>
             <div className="relative h-[300px] rounded-lg overflow-hidden">
               <img
-                src="/placeholder.svg?height=300&width=500"
+                src="https://www.talktoangel.com/images/BecomeTeam.svg?height=300&width=500"
                 alt="Therapist dashboard preview"
                 className="object-cover w-full h-full"
               />
