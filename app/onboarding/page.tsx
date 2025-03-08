@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import SplitText from "@/components/landing/SplitText";
 
 export default function Onboarding() {
   const [isSociallyAwkward, setIsSociallyAwkward] = useState<boolean | null>(
@@ -13,30 +14,38 @@ export default function Onboarding() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md p-6 text-center">
-        <h1 className="text-3xl font-bold">Welcome to MindfulStudent</h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-2">
-          Let's take the first step toward better mental health.
-        </p>
+        <h1 className="text-4xl font-bold">Welcome to MindfulStudent</h1>
+        <SplitText
+          text="Let's take the first step toward better mental health."
+          className="text-lg text-gray-500 dark:text-gray-400 mt-2"
+          delay={50}
+          animationFrom={{ opacity: 0, transform: "translate3d(0,20px,0)" }}
+          animationTo={{ opacity: 1, transform: "translate3d(0,0,0)" }}
+        />
         <div className="mt-6 space-y-4">
           <Button asChild size="lg" variant="outline">
-            <Link href="/assessment">Take a Quick Mental Health Test</Link>
+            <Link href="/assessment" className="text-lg">
+              Take a Quick Mental Health Test
+            </Link>
           </Button>
         </div>
         {isSociallyAwkward === null && (
           <div className="mt-6">
-            <p className="text-gray-500 dark:text-gray-400">
+            <p className="text-lg text-gray-500 dark:text-gray-400">
               Do you consider yourself socially awkward?
             </p>
             <div className="mt-4 flex justify-center gap-4">
               <Button
                 onClick={() => setIsSociallyAwkward(true)}
                 variant="outline"
+                className="text-lg"
               >
                 Yes
               </Button>
               <Button
                 onClick={() => setIsSociallyAwkward(false)}
                 variant="outline"
+                className="text-lg"
               >
                 No
               </Button>
@@ -46,17 +55,17 @@ export default function Onboarding() {
         {isSociallyAwkward !== null && (
           <div className="mt-6 space-y-4">
             {isSociallyAwkward ? (
-              <Button asChild size="lg">
+              <Button asChild size="lg" className="text-lg">
                 <Link href="/chat">Talk to a Chatbot</Link>
               </Button>
             ) : (
               <>
-                <Button asChild size="lg">
+                <Button asChild size="lg" className="text-lg">
                   <Link href="/community">
                     Join Chatrooms (Sign In Required)
                   </Link>
                 </Button>
-                <Button asChild size="lg" variant="outline">
+                <Button asChild size="lg" variant="outline" className="text-lg">
                   <Link href="/resources">Talk to a Therapist</Link>
                 </Button>
               </>
