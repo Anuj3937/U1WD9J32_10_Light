@@ -53,7 +53,7 @@ export default function Home() {
           <h2 className="text-3xl font-bold">What brings you here today?</h2>
           <div className="grid gap-6">
             {[
-              { text: "I need someone to talk to", link: "/therapy-options" },
+              { text: "I need someone to talk to", link: "/chat" },
               {
                 text: "I want to track my mental health",
                 link: "/video-diary",
@@ -62,7 +62,11 @@ export default function Home() {
                 text: "I’d like to explore a supportive community",
                 link: "/auth/login",
               },
-              { text: "I just want to look around", link: "/onboarding" },
+              // { text: "I just want to look around", link: "/onboarding" },
+              {
+                text: "I feel I might be about to do self harm.",
+                link: "/assessment/crisis",
+              },
             ].map((option, index) => (
               <Button
                 key={index}
