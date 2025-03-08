@@ -53,7 +53,7 @@ export default function Home() {
           <h2 className="text-3xl font-bold">What brings you here today?</h2>
           <div className="grid gap-6">
             {[
-              { text: "I need someone to talk to", link: "/chat" },
+              { text: "I need someone to talk to", link: "/resources" },
               {
                 text: "I want to track my mental health",
                 link: "/video-diary",
@@ -101,7 +101,7 @@ export default function Home() {
                   "Join anonymous chatrooms where you can share and listen safely.",
               },
             ].map((feature, index) => (
-              <Card key={index}>
+              <Card key={index} className="bg-muted">
                 <CardContent className="p-6 flex flex-col items-center">
                   <CheckCircle2 className="w-10 h-10 text-primary" />
                   <h3 className="text-xl font-bold mt-3">{feature.title}</h3>

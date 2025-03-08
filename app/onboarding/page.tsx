@@ -14,7 +14,11 @@ export default function Onboarding() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4">
       <Card className="w-full max-w-md p-6 text-center">
-        <h1 className="text-4xl font-bold">Welcome to MindfulStudent</h1>
+        <h1 className="text-4xl font-bold">
+          Welcome <br />
+          to <br />
+          MindScape
+        </h1>
         <SplitText
           text="Let's take the first step toward better mental health."
           className="text-lg text-gray-500 dark:text-gray-400 mt-2"
@@ -32,7 +36,8 @@ export default function Onboarding() {
 
           {/* Added Interactive Story Section */}
           <p className="mt-4 text-gray-500 dark:text-gray-400">
-            Have 10 minutes? Explore an interactive story to discover more about yourself.
+            Have 10 minutes? Explore an interactive story to discover more about
+            yourself.
           </p>
           <Button asChild size="lg" variant="outline">
             <Link href="/story" className="text-lg">
