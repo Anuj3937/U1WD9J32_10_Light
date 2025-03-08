@@ -665,6 +665,7 @@ export default function VideoDiary() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Nav />
       <div className="container mx-auto p-4">
         <h1 className="text-3xl font-bold mb-6">
           Emotional Intelligence Video Diary
