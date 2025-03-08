@@ -12,7 +12,7 @@ export default function Home() {
       <header className="relative z-10 border-b w-full shadow-sm flex justify-center backdrop-blur-md">
         <div className="container flex h-16 items-center justify-between px-6 md:px-8 max-w-6xl w-full">
           <span className="text-3xl font-bold text-primary">
-            MindfulStudent
+            MindScape
           </span>
           <div className="flex items-center gap-4">
             <Button asChild variant="ghost">
