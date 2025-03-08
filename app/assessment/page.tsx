@@ -7,118 +7,99 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Progress } from "@/components/ui/progress"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
-const scenarios = [
+const scenarios: { id: number; question: string; options: { text: string; value: number }[] }[] = [
   {
     id: 1,
-    question: "You have multiple assignments due this week and an upcoming exam. How do you handle this situation?",
-    image: "/placeholder.svg?height=100&width=100",
+    question: "Over the last 2 weeks, how often have you had little interest or pleasure in doing things?",
     options: [
-      { text: "I create a detailed schedule and prioritize tasks", value: 4 },
-      { text: "I feel overwhelmed and have trouble starting", value: 1 },
-      { text: "I work on whatever feels most urgent", value: 2 },
-      { text: "I seek help from classmates or professors", value: 3 },
+      { text: "Not at all", value: 0 },
+      { text: "Several days", value: 1 },
+      { text: "More than half the days", value: 2 },
+      { text: "Nearly every day", value: 3 },
     ],
   },
   {
     id: 2,
-    question: "You received a lower grade than expected on an important project. What's your typical reaction?",
-    image: "/placeholder.svg?height=100&width=100",
+    question: "Over the last 2 weeks, how often have you been feeling down, depressed, or hopeless?",
     options: [
-      { text: "I become very self-critical and discouraged", value: 1 },
-      { text: "I analyze what went wrong and plan improvements", value: 4 },
-      { text: "I avoid thinking about it", value: 2 },
-      { text: "I discuss it with my professor for feedback", value: 3 },
+      { text: "Not at all", value: 0 },
+      { text: "Several days", value: 1 },
+      { text: "More than half the days", value: 2 },
+      { text: "Nearly every day", value: 3 },
     ],
   },
   {
     id: 3,
-    question: "During social gatherings, you usually find yourself:",
-    image: "/placeholder.svg?height=100&width=100",
+    question: "Over the last 2 weeks, how often have you had trouble falling or staying asleep, or sleeping too much?",
     options: [
-      { text: "Feeling anxious and wanting to leave", value: 1 },
-      { text: "Enjoying conversations with a small group", value: 3 },
-      { text: "Preferring to observe from a distance", value: 2 },
-      { text: "Actively engaging with many people", value: 4 },
+      { text: "Not at all", value: 0 },
+      { text: "Several days", value: 1 },
+      { text: "More than half the days", value: 2 },
+      { text: "Nearly every day", value: 3 },
     ],
   },
   {
     id: 4,
-    question: "When facing a personal challenge, your first instinct is to:",
-    image: "/placeholder.svg?height=100&width=100",
+    question: "Over the last 2 weeks, how often have you been feeling tired or having little energy?",
     options: [
-      { text: "Keep it to myself and try to handle it alone", value: 1 },
-      { text: "Share with close friends or family", value: 4 },
-      { text: "Distract myself with other activities", value: 2 },
-      { text: "Seek professional guidance", value: 3 },
+      { text: "Not at all", value: 0 },
+      { text: "Several days", value: 1 },
+      { text: "More than half the days", value: 2 },
+      { text: "Nearly every day", value: 3 },
     ],
   },
   {
     id: 5,
-    question: "How do you typically handle stress-induced sleep issues?",
-    image: "/placeholder.svg?height=100&width=100",
+    question: "Over the last 2 weeks, how often have you had poor appetite or overeating?",
     options: [
-      { text: "I follow a consistent bedtime routine", value: 4 },
-      { text: "I stay up late worrying", value: 1 },
-      { text: "I use my phone/devices until I fall asleep", value: 2 },
-      { text: "I try relaxation techniques", value: 3 },
+      { text: "Not at all", value: 0 },
+      { text: "Several days", value: 1 },
+      { text: "More than half the days", value: 2 },
+      { text: "Nearly every day", value: 3 },
     ],
   },
   {
     id: 6,
-    question: "When you make a mistake in public, you typically:",
-    image: "/placeholder.svg?height=100&width=100",
+    question: "Over the last 2 weeks, how often have you been feeling bad about yourself - or that you are a failure or have let yourself or your family down?",
     options: [
-      { text: "Feel extremely embarrassed and ruminate on it", value: 1 },
-      { text: "Acknowledge it and move on", value: 4 },
-      { text: "Avoid similar situations in the future", value: 2 },
-      { text: "Use humor to diffuse the situation", value: 3 },
+      { text: "Not at all", value: 0 },
+      { text: "Several days", value: 1 },
+      { text: "More than half the days", value: 2 },
+      { text: "Nearly every day", value: 3 },
     ],
   },
   {
     id: 7,
-    question: "During periods of high stress, your eating habits:",
-    image: "/placeholder.svg?height=100&width=100",
+    question: "Over the last 2 weeks, how often have you had trouble concentrating on things, such as reading the newspaper or watching television?",
     options: [
-      { text: "Become irregular or I forget to eat", value: 1 },
-      { text: "Remain consistent and balanced", value: 4 },
-      { text: "I eat more than usual", value: 2 },
-      { text: "I try to maintain healthy choices", value: 3 },
+      { text: "Not at all", value: 0 },
+      { text: "Several days", value: 1 },
+      { text: "More than half the days", value: 2 },
+      { text: "Nearly every day", value: 3 },
     ],
   },
   {
     id: 8,
-    question: "When feeling overwhelmed with emotions, you usually:",
-    image: "/placeholder.svg?height=100&width=100",
+    question: "Over the last 2 weeks, how often have you been moving or speaking so slowly that other people could have noticed. Or the opposite - being so fidgety or restless that you have been moving around a lot more than usual?",
     options: [
-      { text: "Practice mindfulness or meditation", value: 4 },
-      { text: "Feel trapped by the emotions", value: 1 },
-      { text: "Try to suppress the feelings", value: 2 },
-      { text: "Express them through creative activities", value: 3 },
+      { text: "Not at all", value: 0 },
+      { text: "Several days", value: 1 },
+      { text: "More than half the days", value: 2 },
+      { text: "Nearly every day", value: 3 },
     ],
   },
   {
     id: 9,
-    question: "In group projects, you typically find yourself:",
-    image: "/placeholder.svg?height=100&width=100",
+    question: "Over the last 2 weeks, how often have you had thoughts that you would be better off dead, or of hurting yourself?",
     options: [
-      { text: "Taking the lead confidently", value: 4 },
-      { text: "Feeling anxious about team dynamics", value: 1 },
-      { text: "Following others' directions", value: 2 },
-      { text: "Contributing but not leading", value: 3 },
+      { text: "Not at all", value: 0 },
+      { text: "Several days", value: 1 },
+      { text: "More than half the days", value: 2 },
+      { text: "Nearly every day", value: 3 },
     ],
   },
-  {
-    id: 10,
-    question: "When thinking about the future, you most often:",
-    image: "/placeholder.svg?height=100&width=100",
-    options: [
-      { text: "Feel optimistic and motivated", value: 4 },
-      { text: "Experience anxiety and worry", value: 1 },
-      { text: "Avoid thinking about it", value: 2 },
-      { text: "Plan while managing expectations", value: 3 },
-    ],
-  },
-]
+];
+
 
 export default function Assessment() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
@@ -136,12 +117,13 @@ export default function Assessment() {
   }
 
   const calculateScore = () => {
-    const total = Object.values(answers).reduce((sum, value) => sum + value, 0)
-    return (total / (scenarios.length * 4)) * 100
-  }
+    const total = Object.values(answers).reduce((sum, value) => sum + value, 0);
+    return total;
+  };
+  
 
   if (isComplete) {
-    const score = calculateScore()
+    const score = calculateScore();
     return (
       <div className="min-h-screen bg-background">
         <Nav />
@@ -149,35 +131,63 @@ export default function Assessment() {
           <Card>
             <CardHeader>
               <CardTitle>Assessment Complete</CardTitle>
-              <CardDescription>Here's your mental wellness score</CardDescription>
+              <CardDescription>Here's your depression severity score</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="text-center">
-                <div className="text-2xl font-bold mb-2">{Math.round(score)}%</div>
-                <Progress value={score} className="w-full" />
+                <div className="text-2xl font-bold mb-2">{score}</div>
+                <div className="text-lg">
+                  {score >= 20 && "Severe Depression"}
+                  {score >= 15 && score < 20 && "Moderately Severe Depression"}
+                  {score >= 10 && score < 15 && "Moderate Depression"}
+                  {score >= 5 && score < 10 && "Mild Depression"}
+                  {score >= 1 && score < 5 && "Minimal Depression"}
+                  {score === 0 && "No Depression"}
+                </div>
               </div>
               <div className="space-y-2">
                 <h3 className="font-semibold">Recommendations:</h3>
                 <ul className="list-disc list-inside space-y-1">
-                  {score < 50 && (
+                  {score >= 20 && (
                     <>
-                      <li>Consider scheduling a consultation with our counselors</li>
-                      <li>Try our guided meditation exercises</li>
-                      <li>Start a daily mood journal</li>
+                      <li>Seek immediate professional help from a mental health expert.</li>
+                      <li>Consider therapy or counseling.</li>
+                      <li>Follow a treatment plan as advised by your healthcare provider.</li>
                     </>
                   )}
-                  {score >= 50 && score < 75 && (
+                  {score >= 15 && score < 20 && (
                     <>
-                      <li>Continue building healthy coping strategies</li>
-                      <li>Explore our stress management resources</li>
-                      <li>Practice regular self-care activities</li>
+                      <li>Consult with a mental health professional for guidance.</li>
+                      <li>Engage in stress management techniques.</li>
+                      <li>Practice self-care activities regularly.</li>
                     </>
                   )}
-                  {score >= 75 && (
+                  {score >= 10 && score < 15 && (
                     <>
-                      <li>Maintain your positive mental health practices</li>
-                      <li>Share your strategies with peers</li>
-                      <li>Consider becoming a peer mentor</li>
+                      <li>Continue building healthy coping strategies.</li>
+                      <li>Explore stress management resources.</li>
+                      <li>Regularly practice mindfulness or meditation.</li>
+                    </>
+                  )}
+                  {score >= 5 && score < 10 && (
+                    <>
+                      <li>Maintain a daily mood journal.</li>
+                      <li>Engage in regular physical activity.</li>
+                      <li>Consider seeking support from friends or family.</li>
+                    </>
+                  )}
+                  {score >= 1 && score < 5 && (
+                    <>
+                      <li>Monitor your mood and symptoms.</li>
+                      <li>Engage in activities you enjoy.</li>
+                      <li>Stay connected with supportive people.</li>
+                    </>
+                  )}
+                  {score === 0 && (
+                    <>
+                      <li>Maintain your current mental health practices.</li>
+                      <li>Continue engaging in activities that promote well-being.</li>
+                      <li>Stay connected with friends and family.</li>
                     </>
                   )}
                 </ul>
@@ -187,9 +197,9 @@ export default function Assessment() {
               <Button
                 variant="outline"
                 onClick={() => {
-                  setCurrentQuestion(0)
-                  setAnswers({})
-                  setIsComplete(false)
+                  setCurrentQuestion(0);
+                  setAnswers({});
+                  setIsComplete(false);
                 }}
               >
                 Retake Assessment
@@ -201,8 +211,9 @@ export default function Assessment() {
           </Card>
         </main>
       </div>
-    )
+    );
   }
+  
 
   const currentScenario = scenarios[currentQuestion]
 
