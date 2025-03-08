@@ -391,9 +391,9 @@ export default function Dashboard() {
               <p className="text-muted-foreground">
                 Create your first goal to start tracking your progress
               </p>
-              {/* <Button onClick={() => setShowAddGoal(true)}>
+              <Button onClick={() => setShowAddGoal(true)}>
                 Add Your First Goal
-              </Button> */}
+              </Button>
             </div>
           </Card>
         ) : (

@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,21 +10,32 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useMentalHealthStore } from "@/lib/data-service"
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useMentalHealthStore } from "@/lib/data-service";
 
-export function AddGoalDialog() {
-  const [open, setOpen] = useState(false)
-  const addGoal = useMentalHealthStore((state) => state.addGoal)
+export function AddGoalDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const addGoal = useMentalHealthStore((state) => state.addGoal);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    const form = e.target as HTMLFormElement
-    const formData = new FormData(form)
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
 
     addGoal({
       id: crypto.randomUUID(),
@@ -34,20 +45,22 @@ export function AddGoalDialog() {
       current: 0,
       type: formData.get("type") as "daily" | "weekly" | "monthly",
       category: formData.get("category") as any,
-    })
+    });
 
-    setOpen(false)
-  }
+    onOpenChange(false); // Close the dialog
+  };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button>Add Goal</Button>
+        <Button onClick={() => onOpenChange(true)}>Add Goal</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add New Goal</DialogTitle>
-          <DialogDescription>Set a new goal to improve your mental well-being</DialogDescription>
+          <DialogDescription>
+            Set a new goal to improve your mental well-being
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -96,6 +109,5 @@ export function AddGoalDialog() {
         </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-
